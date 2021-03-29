@@ -32,6 +32,11 @@ let midImg = document.getElementById('midimg');
 let rightImg = document.getElementById('rightimg');
 let defultRounds = 25;
 let numberofRounds = 0;
+let totalvotes = [];
+let totalviews = [];
+let xleft = 0;
+let xright = 0;
+let xmid = 0;
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -62,6 +67,19 @@ function renderIndex() {
   }
   while (rightIndex === leftIndex || rightIndex === midIndex) {
     rightIndex = randomNumber(0, ImgVots.all.length - 1);
+  }
+
+  while ((leftIndex === xleft || leftIndex === xright || leftIndex === xmid || leftIndex === midIndex || leftIndex === rightIndex)) {
+    leftIndex = randomNumber(0, ImgVots.all.length - 1);
+
+  }
+  while ((rightIndex === xleft || rightIndex === xright || rightIndex === xmid || rightIndex === leftIndex || rightIndex === midIndex)) {
+    rightIndex = randomNumber(0, ImgVots.all.length - 1);
+
+  }
+  while ((midIndex === xleft || midIndex === xright || midIndex === xmid || midIndex === rightIndex || midIndex === leftIndex)) {
+    midIndex = randomNumber(0, ImgVots.all.length - 1);
+
   }
   // console.log(ImgVots.all[1].path);
   LeftImg.src = ImgVots.all[leftIndex].path;
@@ -94,6 +112,9 @@ let section = document.getElementById('votes');
 section.addEventListener('click', clickfun);
 
 function clickfun(event) {
+  xleft = leftIndex;
+  xright = rightIndex;
+  xmid = midIndex;
 
   if (numberofRounds < defultRounds) {
     if (event.target.id !== 'votes') {
@@ -118,11 +139,14 @@ function clickfun(event) {
     renderIndex();
   }
   else if (numberofRounds === defultRounds) {
+    // votandview();
     alert('check the result The  Rounds is finished ');
     numberofRounds = 0;
     clickfun3(event);
-    section.removeEventListener ('click', clickfun); }
-    section2.removeEventListener('submit', clickfun3);
+    section.removeEventListener('click', clickfun);
+
+  }
+  section2.removeEventListener('submit', clickfun3);
 }
 ////////////////////////////////////////////////////////////////////////////////////
 let section1 = document.getElementById('submitrounds');
@@ -151,7 +175,8 @@ section2.addEventListener('submit', clickfun3);
 function clickfun3(event) {
   event.preventDefault();
 
-
+  votandview();
+  chartvotview();
   // let resulttable = document.getElementById('resultable');
   // let tableresult = document.createElement('table');
   // resulttable.appendChild(tableresult);
@@ -198,13 +223,61 @@ function clickfun3(event) {
 
 }
 
-  // console.log(event);
+// console.log(event);
 
-  // let order = event.target.result1.value;
+// let order = event.target.result1.value;
 
-  // console.log(order);
-  // console.log(typeof order);
-  // let y = order;
-  // console.log( y);  tableresult
-  // let resulttable=document.getElementById('resulttable');
+// console.log(order);
+// console.log(typeof order);
+// let y = order;
+// console.log( y);  tableresult
+// let resulttable=document.getElementById('resulttable');
 // resulttable.appendChild()
+
+function votandview() {
+
+  for (let i = 0; i < ImgVots.all.length; i++) {
+    totalvotes.push(ImgVots.all[i].votes);
+    // console.log(totalvotes);
+    totalviews.push(ImgVots.all[i].views);
+    // console.log(totalviews);
+  }
+}
+
+function chartvotview() {
+  let ctx = document.getElementById('myChart').getContext('2d');
+  let chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+      labels: imgsNames,
+      
+      datasets: [{
+        label: 'Votes Chart',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: totalvotes
+        
+        
+      },
+      {
+        label: 'Views Chart',
+        backgroundColor: 'rgba(15, 204, 72, 0.5)',
+        borderColor: 'rgba(15, 204, 72, 0.5)',
+        data: totalvotes
+        
+
+      }
+      ]
+
+
+
+
+    },
+
+    // Configuration options go here
+    options: {}
+  });
+}
