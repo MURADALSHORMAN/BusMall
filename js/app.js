@@ -32,6 +32,11 @@ let midImg = document.getElementById('midimg');
 let rightImg = document.getElementById('rightimg');
 let defultRounds = 25;
 let numberofRounds = 0;
+let totalvotes = [];
+let totalviews = [];
+let xleft = 0;
+let xright = 0;
+let xmid = 0;
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -51,7 +56,7 @@ for (let i = 0; i < imgsNames.length; i++) {
 }
 
 // console.log(ImgVots.all);
-function render() {
+function renderIndex() {
 
   leftIndex = randomNumber(0, ImgVots.all.length - 1);
   midIndex = randomNumber(0, ImgVots.all.length - 1);
@@ -62,6 +67,19 @@ function render() {
   }
   while (rightIndex === leftIndex || rightIndex === midIndex) {
     rightIndex = randomNumber(0, ImgVots.all.length - 1);
+  }
+
+  while ((leftIndex === xleft || leftIndex === xright || leftIndex === xmid || leftIndex === midIndex || leftIndex === rightIndex)) {
+    leftIndex = randomNumber(0, ImgVots.all.length - 1);
+
+  }
+  while ((rightIndex === xleft || rightIndex === xright || rightIndex === xmid || rightIndex === leftIndex || rightIndex === midIndex)) {
+    rightIndex = randomNumber(0, ImgVots.all.length - 1);
+
+  }
+  while ((midIndex === xleft || midIndex === xright || midIndex === xmid || midIndex === rightIndex || midIndex === leftIndex)) {
+    midIndex = randomNumber(0, ImgVots.all.length - 1);
+
   }
   // console.log(ImgVots.all[1].path);
   LeftImg.src = ImgVots.all[leftIndex].path;
@@ -80,32 +98,28 @@ function render() {
 
 
 }
-render();
+renderIndex();
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-let submitRound = document.getElementById('submitrounds');
-// let textbox=document.getElementById('rounds');
-// submitRound.addEventListener('submit',submitRounds);
+// let submitRound = document.getElementById('submitrounds');
 
-function submitRounds(event) {
-  console.log(event);
-  let i = event.target.textbox.value;
-  console.log(i);
-}
+// function submitRounds(event) {
+//   console.log(event);
+//   let i = event.target.textbox.value;
+//   console.log(i);
+// }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 let section = document.getElementById('votes');
 section.addEventListener('click', clickfun);
-// section.addEventListener('submit',submitRounds);
-
 
 function clickfun(event) {
-  // console.log(event);
-  // let order = event.target.value;
-  //  console.log(order);
+  xleft = leftIndex;
+  xright = rightIndex;
+  xmid = midIndex;
 
   if (numberofRounds < defultRounds) {
     if (event.target.id !== 'votes') {
       if (event.target.id === 'leftimg') {
-        ImgVots.all[leftIndex].votes = ImgVots.all[leftIndex].views+1;
+        ImgVots.all[leftIndex].votes = ImgVots.all[leftIndex].views + 1;
       }
 
 
@@ -121,15 +135,18 @@ function clickfun(event) {
       ImgVots.all[leftIndex].views = ImgVots.all[leftIndex].views + 1;
       ImgVots.all[rightIndex].views = ImgVots.all[rightIndex].views + 1;
       numberofRounds++;
-      render();
     }
+    renderIndex();
   }
-  else if (defultRounds === 25) {
-    alert('check the result The Defult Rounds is finished ');
+  else if (numberofRounds === defultRounds) {
+    // votandview();
+    alert('check the result The  Rounds is finished ');
+    numberofRounds = 0;
+    clickfun3(event);
+    section.removeEventListener('click', clickfun);
+
   }
-  else {
-    alert(`check the result The ${defultRounds} Rounds is finished `);
-  }
+  section2.removeEventListener('submit', clickfun3);
 }
 ////////////////////////////////////////////////////////////////////////////////////
 let section1 = document.getElementById('submitrounds');
@@ -139,13 +156,10 @@ function clickfun1(event) {
   event.preventDefault();
   console.log(event.target);
   let order = event.target.roundvalu.value;
-  // console.log(order);
-  // console.log(typeof order);
   let x = Math.floor(order);
-  // console.log(typeof x);
-  // eslint-disable-next-line valid-typeof
+
   if (typeof x === 'Number' || x > 0) {
-    // console.log(typeof x);
+
     defultRounds = x;
   }
   else {
@@ -161,64 +175,109 @@ section2.addEventListener('submit', clickfun3);
 function clickfun3(event) {
   event.preventDefault();
 
-  // // resulttable1.parentNode.remove(resulttable1);
-  // // let resulttable1 = document.getElementById('resultable');
-  // // resulttable1.parentNode.remove('resulttable');
-  // // // resulttable1.delete(resulttable1);
+  votandview();
+  chartvotview();
+  // let resulttable = document.getElementById('resultable');
+  // let tableresult = document.createElement('table');
+  // resulttable.appendChild(tableresult);
 
-  // // let resulttable=document.getElementById('resulttable');
+  let ulEl = document.getElementById('imglist');
 
-  // let resulttable2 = document.createElement('section');
-  // // let idd =document.createAttribute('resulttable')
-  // resulttable2.setAttribute('id', 'resulttable');
-  // // console.log(resulttable);
-  // let tableresult = document.getElementById('tableresult');
-  let resulttable = document.getElementById('resultable');
-  let tableresult = document.createElement('table');
-  resulttable.appendChild(tableresult);
+  // let trEl = document.createElement('tr');
+  // tableresult.appendChild(trEl);
 
-  let trEl = document.createElement('tr');
-  tableresult.appendChild(trEl);
+  // let th0El = document.createElement('th');
+  // trEl.appendChild(th0El);
+  // th0El.textContent = 'Image Name';
+  // let thEl = document.createElement('th');
+  // trEl.appendChild(thEl);
+  // thEl.textContent = 'Votes';
 
-  let th0El = document.createElement('th');
-  trEl.appendChild(th0El);
-  th0El.textContent = 'Image Name';
-  let thEl = document.createElement('th');
-  trEl.appendChild(thEl);
-  thEl.textContent = 'Votes';
-
-  let th1El = document.createElement('th');
-  trEl.appendChild(th1El);
-  th1El.textContent = 'views';
+  // let th1El = document.createElement('th');
+  // trEl.appendChild(th1El);
+  // th1El.textContent = 'views';
 
   for (let i = 0; i < ImgVots.all.length; i++) {
-    let tr1El = document.createElement('tr');
-    tableresult.appendChild(tr1El);
+    let liEL = document.createElement('li');
+    ulEl.appendChild(liEL);
+    liEL.textContent = `${ImgVots.all[i].name} have a ${ImgVots.all[i].views} views and ${ImgVots.all[i].votes} votes`;
 
-    let tdEl = document.createElement('td');
-    tr1El.appendChild(tdEl);
-    tdEl.textContent = ImgVots.all[i].name;
+    // let tr1El = document.createElement('tr');
+    // tableresult.appendChild(tr1El);
 
-    let td1El = document.createElement('td');
-    tr1El.appendChild(td1El);
-    td1El.textContent = ImgVots.all[i].votes;
+    // let tdEl = document.createElement('td');
+    // tr1El.appendChild(tdEl);
+    // tdEl.textContent = ImgVots.all[i].name;
 
-    let td2El = document.createElement('td');
-    tr1El.appendChild(td2El);
-    td2El.textContent = ImgVots.all[i].views;
-    
+    // let td1El = document.createElement('td');
+    // tr1El.appendChild(td1El);
+    // td1El.textContent = ImgVots.all[i].votes;
+
+    // let td2El = document.createElement('td');
+    // tr1El.appendChild(td2El);
+    // td2El.textContent = ImgVots.all[i].views;
+
 
   }
-  
+  //  section2.removeEventListener('submit', clickfun3);
+
 }
 
-  // console.log(event);
+// console.log(event);
 
-  // let order = event.target.result1.value;
+// let order = event.target.result1.value;
 
-  // console.log(order);
-  // console.log(typeof order);
-  // let y = order;
-  // console.log( y);  tableresult
-  // let resulttable=document.getElementById('resulttable');
+// console.log(order);
+// console.log(typeof order);
+// let y = order;
+// console.log( y);  tableresult
+// let resulttable=document.getElementById('resulttable');
 // resulttable.appendChild()
+
+function votandview() {
+
+  for (let i = 0; i < ImgVots.all.length; i++) {
+    totalvotes.push(ImgVots.all[i].votes);
+    // console.log(totalvotes);
+    totalviews.push(ImgVots.all[i].views);
+    // console.log(totalviews);
+  }
+}
+
+function chartvotview() {
+  let ctx = document.getElementById('myChart').getContext('2d');
+  let chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+      labels: imgsNames,
+      
+      datasets: [{
+        label: 'Votes Chart',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: totalvotes
+        
+        
+      },
+      {
+        label: 'Views Chart',
+        backgroundColor: 'rgba(15, 204, 72, 0.5)',
+        borderColor: 'rgba(15, 204, 72, 0.5)',
+        data: totalvotes
+        
+
+      }
+      ]
+
+
+
+
+    },
+
+    // Configuration options go here
+    options: {}
+  });
+}
