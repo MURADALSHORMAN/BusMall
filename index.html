@@ -18,10 +18,11 @@
         </section>
         <br><br>
         <section id="votes">
-            <img class="box" src="" alt="" id="leftimg">
-            <img class="box" src="" alt="" id="midimg">
-            <img class="box" src="" alt="" id="rightimg">
-
+            <div>
+                <img class="box" src="" alt="" id="leftimg">
+                <img class="box" src="" alt="" id="midimg">
+                <img class="box" src="" alt="" id="rightimg">
+            </div>
         </section>
         <br><br><br>
         <form id="submitrounds">
@@ -39,16 +40,19 @@
         </form>
         <section id="resultable">
             <section id="resulttable">
-                <!-- <table class="zigzag" id=tableresult></table> -->
+                <ul id="imglist">
+
+                </ul>
 
             </section>
         </section>
     </main>
-   <div id="fotdiv"></div>
-        <footer>
-           <div> <img src="./images/9-2-color-effects-png-clipart_400x400.png" id="imgfpt"></div>
-        </footer>
-    
+    <div id="fotdiv"></div>
+    <footer>
+        <div> <img src="./images/9-2-color-effects-png-clipart_400x400.png" id="imgfpt"></div>
+    </footer>
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <script src="path/to/chartjs/dist/Chart.js"></script>
     <script src="./js/app.js"></script>
 </body>
 
