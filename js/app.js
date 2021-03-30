@@ -48,13 +48,28 @@ function ImgVots(name) {
   this.votes = 0;
   this.views = 0;
   ImgVots.all.push(this);
-
+  store();
 }
+// restore();
 ImgVots.all = [];
 
 for (let i = 0; i < imgsNames.length; i++) {
   new ImgVots(imgsNames[i]);
 }
+
+function store() {
+  let storevalue = JSON.stringify(ImgVots.all);
+  localStorage.setItem('imegsinfo', storevalue);
+
+}
+
+function restore() {
+  let restorevalue = localStorage.getItem('imegsinfo');
+  let restoreobj = JSON.parse(restorevalue);
+  ImgVots.all = restoreobj;
+  
+} restore();
+
 
 // console.log(ImgVots.all);
 function renderIndex() {
@@ -96,10 +111,11 @@ function renderIndex() {
   rightImg.src = ImgVots.all[rightIndex].path;
   rightImg.alt = ImgVots.all[rightIndex].name;
   rightImg.title = ImgVots.all[rightIndex].name;
-  
+
 
 }
 renderIndex();
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // let submitRound = document.getElementById('submitrounds');
 
@@ -116,6 +132,7 @@ function clickfun(event) {
   xleft = leftIndex;
   xright = rightIndex;
   xmid = midIndex;
+ 
   // console.log(event.target.id);
   if (numberofRounds < defultRounds) {
     if (event.target.id == 'leftimg' || event.target.id == 'midimg' || event.target.id == 'rightimg') {
@@ -136,6 +153,8 @@ function clickfun(event) {
       ImgVots.all[rightIndex].views = ImgVots.all[rightIndex].views + 1;
       numberofRounds++;
       renderIndex();
+      store();
+    //  restore();
     }
     // votandview();
   }
@@ -149,7 +168,7 @@ function clickfun(event) {
     let section3 = document.getElementById('result1');
     section3.value = 'Reset';
   }
-
+  
 }
 ////////////////////////////////////////////////////////////////////////////////////
 let section1 = document.getElementById('submitrounds');
@@ -177,14 +196,11 @@ section2.addEventListener('submit', clickfun3);
 
 function clickfun3(event) {
   event.preventDefault();
-
   votandview();
   chartvotview();
   // let resulttable = document.getElementById('resultable');
   // let tableresult = document.createElement('table');
   // resulttable.appendChild(tableresult);
- 
-
   let ulEl = document.getElementById('imglist');
 
   // let trEl = document.createElement('tr');
@@ -251,9 +267,9 @@ function votandview() {
 function chartvotview() {
 
   section.removeEventListener('click', clickfun);
-    section2.removeEventListener('submit', clickfun3);
-    let section3 = document.getElementById('result1');
-    section3.value='Reset';
+  section2.removeEventListener('submit', clickfun3);
+  let section3 = document.getElementById('result1');
+  section3.value = 'Reset';
 
   let ctx = document.getElementById('myChart').getContext('2d');
   let chart = new Chart(ctx, {
@@ -270,7 +286,6 @@ function chartvotview() {
         borderColor: 'rgb(255, 99, 132)',
         data: totalvotes
 
-
       },
       {
         label: 'Views Chart',
@@ -281,22 +296,18 @@ function chartvotview() {
 
       }
       ]
-
-
-
-
     },
-
     // Configuration options go here
     options: {
-
     }
   });
 }
 
-// var pugbombButton = document.getElementById('pugbomb');
-// pugbombButton.addEventListener('click', pugbombButtonHandler);
+let clear = document.getElementById('clear1');
+clear.addEventListener('submit', clearfun);
 
-// function pugbombButtonHandler() {
-//   alert('PUGBOMB!!!!');
-// }
+function clearfun(event) {
+  event.preventDefault();
+  localStorage.clear();
+
+}
