@@ -37,6 +37,7 @@ let totalviews = [0];
 let xleft = 0;
 let xright = 0;
 let xmid = 0;
+let restoreobj =null;
 
 function randomNumber(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -47,10 +48,15 @@ function ImgVots(name) {
   this.path = `./images/${name}`;
   this.votes = 0;
   this.views = 0;
-  ImgVots.all.push(this);
-  store();
+  
+  if (restoreobj == null) {
+    ImgVots.all.push(this);
+  }
+  // ImgVots.all.push(this);
+
+  // store();
 }
-// restore();
+
 ImgVots.all = [];
 
 for (let i = 0; i < imgsNames.length; i++) {
@@ -67,8 +73,8 @@ function restore() {
   let restorevalue = localStorage.getItem('imegsinfo');
   let restoreobj = JSON.parse(restorevalue);
   ImgVots.all = restoreobj;
-  
-} restore();
+
+} 
 
 
 // console.log(ImgVots.all);
@@ -129,10 +135,12 @@ let section = document.getElementById('votes');
 section.addEventListener('click', clickfun);
 
 function clickfun(event) {
+  restore();
   xleft = leftIndex;
   xright = rightIndex;
   xmid = midIndex;
- 
+
+
   // console.log(event.target.id);
   if (numberofRounds < defultRounds) {
     if (event.target.id == 'leftimg' || event.target.id == 'midimg' || event.target.id == 'rightimg') {
@@ -154,7 +162,7 @@ function clickfun(event) {
       numberofRounds++;
       renderIndex();
       store();
-    //  restore();
+      //  restore();
     }
     // votandview();
   }
@@ -168,7 +176,7 @@ function clickfun(event) {
     let section3 = document.getElementById('result1');
     section3.value = 'Reset';
   }
-  
+
 }
 ////////////////////////////////////////////////////////////////////////////////////
 let section1 = document.getElementById('submitrounds');
